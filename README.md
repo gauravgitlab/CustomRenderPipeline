@@ -9,6 +9,9 @@ Create Custom Render Pipeline
 - Environment Setup with 3d Model and using Build-In Renderer Pipeline
 
 
-## Lesson 2
+## Lesson - 2
 - Creating Custom Render Pipeline
 - Add BasicLitShader on floor and 3d Character
+
+## Lesson - 3
+- Create shader for applying Texture
