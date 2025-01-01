@@ -12,7 +12,11 @@ public class CustomRenderPipeline : RenderPipeline
         // Each camera renders independently, so we delegate the logic to RenderSingleCamera.
         foreach (var camera in cameras)
         {
-            RenderSingleCamera(context, camera);
+            // handle both scene and game camera
+            if(camera.cameraType is CameraType.SceneView or CameraType.Game)
+            {
+                RenderSingleCamera(context, camera);
+            }
         }
     }
 
@@ -33,10 +37,24 @@ public class CustomRenderPipeline : RenderPipeline
         
         // Executes the culling process and returns CullingResults, which contains all visible objects.
         CullingResults cullingResults = context.Cull(ref cullingParameters);
-       
+        
         // Create a CommandBuffer directly
         // CommandBuffer is used to send rendering instructions to the GPU.
         CommandBuffer cmd = new CommandBuffer { name = "Render Camera" };
+        
+        // set up directional light
+        if (RenderSettings.sun != null && RenderSettings.sun.enabled)
+        {
+            Light mainLight = RenderSettings.sun; // main directional light
+            cmd.SetGlobalVector("_WorldSpaceLightPos0", -mainLight.transform.forward); // direction of the light
+            cmd.SetGlobalColor("_LightColor0", mainLight.color * mainLight.intensity); // color of the light, light color and intensity
+        }
+        else
+        {
+            // No directional light: clear light data
+            cmd.SetGlobalVector("_WorldSpaceLightPos0", Vector3.zero);  // No light direction
+            cmd.SetGlobalColor("_LightColor0", Color.black);                // No light color
+        }
         
         // clear the screen with a black color
         cmd.ClearRenderTarget(true, true, Color.black);
