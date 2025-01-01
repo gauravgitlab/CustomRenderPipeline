@@ -27,12 +27,13 @@ Shader "Custom/BasicTexturedShader"
             };
 
             sampler2D _MainTex;
+            float4 _MainTex_ST;      // Unity provides this for tiling (x, y) and offset (z, w)
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv; // Pass UV coordinates
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex); 
                 return o;
             }
 
