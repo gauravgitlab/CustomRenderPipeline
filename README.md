@@ -22,3 +22,5 @@ Create Custom Render Pipeline
 ![image](https://github.com/user-attachments/assets/5e3a80ee-b94d-420d-ac81-2be806743bff)
 
 
+## Lesson - 4
+- Tiling and offset on Texture shader
