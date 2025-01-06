@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -56,6 +57,26 @@ public class CustomRenderPipeline : RenderPipeline
             cmd.SetGlobalColor("_LightColor0", Color.black);                // No light color
         }
         
+        // handle spot light
+        Light spotLight = FindFirstSpotLight();
+        if(spotLight != null && spotLight.enabled)
+        {
+            cmd.SetGlobalVector("_SpotLightPosition", spotLight.transform.position);
+            cmd.SetGlobalVector("_SpotLightDirection", spotLight.transform.forward);
+            cmd.SetGlobalColor("_SpotLightColor", spotLight.color * spotLight.intensity);
+            cmd.SetGlobalFloat("_SpotLightAngle", Mathf.Cos(spotLight.spotAngle * 0.5f * Mathf.Deg2Rad));
+            cmd.SetGlobalFloat("_SpotLightRange", spotLight.range);
+            Debug.Log(Mathf.Cos(spotLight.spotAngle * 0.5f * Mathf.Deg2Rad));
+        }
+        else
+        {
+            cmd.SetGlobalVector("_SpotLightPosition", Vector3.zero);
+            cmd.SetGlobalVector("_SpotLightDirection", Vector3.zero);
+            cmd.SetGlobalColor("_SpotLightColor", Color.black);
+            cmd.SetGlobalFloat("_SpotLightAngle", 0);
+            cmd.SetGlobalFloat("_SpotLightRange", 0);
+        }
+        
         // clear the screen with a black color
         cmd.ClearRenderTarget(true, true, Color.black);
         context.ExecuteCommandBuffer(cmd);
@@ -65,18 +86,25 @@ public class CustomRenderPipeline : RenderPipeline
         
         // Draw objects, Configures how objects should be drawn, specifying the shader pass (ShaderTagId) and sorting order.
         var drawingSettings = new DrawingSettings(new ShaderTagId("UniversalForward"), new SortingSettings(camera));
+        var filteringSettings = new FilteringSettings(RenderQueueRange.all);
+        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);
         
         // Render opaque objects, Filters objects based on their render queue (e.g., opaque objects with queue 0–2500).
-        var opaqueFilter = new FilteringSettings(RenderQueueRange.opaque);
+        //var opaqueFilter = new FilteringSettings(RenderQueueRange.opaque);
         // Draws all visible opaque objects from the cullingResults.
-        context.DrawRenderers(cullingResults, ref drawingSettings, ref opaqueFilter);
+        //context.DrawRenderers(cullingResults, ref drawingSettings, ref opaqueFilter);
         
         // Render transparent objects, Same as opaque rendering, but filters objects in the transparent render queue (2501–5000).
         // Ensures transparent objects are drawn after opaque objects for proper blending.
-        var transparentFilter = new FilteringSettings(RenderQueueRange.transparent);
-        context.DrawRenderers(cullingResults, ref drawingSettings, ref transparentFilter);
+        //var transparentFilter = new FilteringSettings(RenderQueueRange.transparent);
+        //context.DrawRenderers(cullingResults, ref drawingSettings, ref transparentFilter);
 
         // Sends all queued rendering commands to the GPU. and Finalizes the rendering for the current camera.
         context.Submit();
+    }
+
+    private static Light FindFirstSpotLight()
+    {
+        return Object.FindObjectsByType<Light>(FindObjectsSortMode.None).FirstOrDefault(light => light.type == LightType.Spot);
     }
 }

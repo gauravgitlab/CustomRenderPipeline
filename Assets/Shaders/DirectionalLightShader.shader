@@ -1,5 +1,5 @@
 // this shader works with one directional light only
-Shader "Custom/LitShaderDirectionalLight"
+Shader "Custom/DirectionalLightShader"
 {
     Properties
     {

@@ -25,8 +25,10 @@ Create Custom Render Pipeline
 ## Lesson - 4
 - Tiling and offset on Texture shader
 
-## Lessob - 5
+## Lesson - 5
 - Adding one directional light
 <img width="403" alt="image" src="https://github.com/user-attachments/assets/4f70aaab-e27f-4198-9eee-c3dc4eb19cd9" />
 
+## Lesson - 6
+- Adding one Spot Light
 
