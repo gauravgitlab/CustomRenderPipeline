@@ -35,4 +35,12 @@ Create Custom Render Pipeline
 
 ![image](https://github.com/user-attachments/assets/1ac758a7-6fa6-4b04-ae15-a49fe171d394)
 
+## Lesson - 7
+- Adding one Point Light
+
+![image](https://github.com/user-attachments/assets/6fe5380e-c85c-43fa-9b6e-efaf3707338d)
+
+
+
+
 
