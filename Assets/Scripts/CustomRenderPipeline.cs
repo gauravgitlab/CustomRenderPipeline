@@ -77,6 +77,21 @@ public class CustomRenderPipeline : RenderPipeline
             cmd.SetGlobalFloat("_SpotLightRange", 0);
         }
         
+        // setup point light
+        Light pointLight = FindFirstPointLight();
+        if(pointLight != null && pointLight.enabled)
+        {
+            cmd.SetGlobalVector("_PointLightPosition", pointLight.transform.position);
+            cmd.SetGlobalColor("_PointLightColor", pointLight.color * pointLight.intensity);
+            cmd.SetGlobalFloat("_PointLightRange", pointLight.range);
+        }
+        else
+        {
+            cmd.SetGlobalVector("_PointLightPosition", Vector3.zero);
+            cmd.SetGlobalColor("_PointLightColor", Color.black);
+            cmd.SetGlobalFloat("_PointLightRange", 0);
+        }
+        
         // clear the screen with a black color
         cmd.ClearRenderTarget(true, true, Color.black);
         context.ExecuteCommandBuffer(cmd);
@@ -106,5 +121,10 @@ public class CustomRenderPipeline : RenderPipeline
     private static Light FindFirstSpotLight()
     {
         return Object.FindObjectsByType<Light>(FindObjectsSortMode.None).FirstOrDefault(light => light.type == LightType.Spot);
+    }
+    
+    private static Light FindFirstPointLight()
+    {
+        return Object.FindObjectsByType<Light>(FindObjectsSortMode.None).FirstOrDefault(light => light.type == LightType.Point);
     }
 }
